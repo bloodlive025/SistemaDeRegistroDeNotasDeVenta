@@ -1,0 +1,5 @@
+CREATE TABLE notasdeventa (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cliente VARCHAR(255) NOT NULL,
+    total DOUBLE NOT NULL
+);
