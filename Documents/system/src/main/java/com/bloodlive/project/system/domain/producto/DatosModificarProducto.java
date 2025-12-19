@@ -1,9 +1,8 @@
 package com.bloodlive.project.system.domain.producto;
 
-public record DatosRespuestaProducto(Long id,
+public record DatosModificarProducto(Long id,
                                      String nombre,
-                                     Double precio,
                                      Integer cantidad,
-                                     String verf
-) {
+                                     Double precio
+                                     ) {
 }
