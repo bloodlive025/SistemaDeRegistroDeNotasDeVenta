@@ -1,6 +1,6 @@
 package com.bloodlive.project.system.domain.notadeventa;
 
-import com.bloodlive.project.system.domain.detallesnotadeventa.DatosDetalleVenta;
+import com.bloodlive.project.system.domain.detallesnotadeventa.DatosDetalleNotaDeVenta;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,6 +10,6 @@ public record DatosRegistroNotaDeVenta(
         @NotBlank
         String cliente,
         @NotNull
-        List<DatosDetalleVenta> productos
+        List<DatosDetalleNotaDeVenta> productos
         ) {
 }

@@ -1,12 +1,14 @@
 package com.bloodlive.project.system.controller;
 
 import com.bloodlive.project.system.ValidacionException;
+import com.bloodlive.project.system.domain.detallesnotadeventa.DatosModificarNotaDeVenta;
 import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVenta;
 import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVentaRepository;
 import com.bloodlive.project.system.domain.notadeventa.*;
 import com.bloodlive.project.system.domain.producto.DatosListadoProductos;
 import com.bloodlive.project.system.domain.producto.Producto;
 import com.bloodlive.project.system.domain.producto.ProductoRepository;
+import com.bloodlive.project.system.service.NotaDeVentaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+
 @RestController
 @RequestMapping("/notadeventa")
 @SecurityRequirement(name = "bearer-key")
@@ -31,35 +35,21 @@ public class NotaDeVentaController {
     NotaDeVentaRepository notaDeVentaRepository;
     @Autowired
     ProductoRepository productoRepository;
+    @Autowired
+    NotaDeVentaService notaDeVentaService;
+
+    public NotaDeVentaController(NotaDeVentaService notaDeVentaService,NotaDeVentaRepository notaDeVentaRepository){
+        this.notaDeVentaService = notaDeVentaService;
+        this.notaDeVentaRepository = notaDeVentaRepository;
+    }
+
     @PostMapping
     @Transactional
     public ResponseEntity<DatosRespuestaNotaDeVenta> registrarNotaDeVenta(
             @RequestBody @Valid DatosRegistroNotaDeVenta datosRegistroNotaDeVenta,
             UriComponentsBuilder uriComponentsBuilder){
-        //SETEO DEL CLIENTE
-        NotaDeVenta notaDeVenta=new NotaDeVenta();
-        notaDeVenta.setCliente(datosRegistroNotaDeVenta.cliente());
-
-        List<DetalleNotaDeVenta> detalles = datosRegistroNotaDeVenta.productos().stream().map(datosDetalleVenta->
-                {
-                    Producto producto = productoRepository.findById(datosDetalleVenta.productoId())
-                            .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + datosDetalleVenta.productoId()));
-
-                    DetalleNotaDeVenta detalleNotaDeVenta = new DetalleNotaDeVenta();
-                    detalleNotaDeVenta.setNotaDeVenta(notaDeVenta);
-                    detalleNotaDeVenta.setProducto(producto);
-                    detalleNotaDeVenta.setCantidad(datosDetalleVenta.cantidad());
-                    detalleNotaDeVenta.setSubtotal(producto.getPrecio()*datosDetalleVenta.cantidad());
-                    return detalleNotaDeVenta;
-                }).collect(Collectors.toList());
-
-        //notaDeVenta = notaDeVentaRepository.save(new NotaDeVenta(datosRegistroNotaDeVenta));
-        notaDeVenta.setProductos(detalles);
-        notaDeVenta.setTotal(detalles.stream().mapToDouble(DetalleNotaDeVenta::getSubtotal).sum());
-
-        notaDeVentaRepository.save(notaDeVenta);
-
-
+        NotaDeVenta notaDeVenta;
+        notaDeVenta = notaDeVentaService.registrarNotaDeVenta(datosRegistroNotaDeVenta);
 
         DatosRespuestaNotaDeVenta datosRespuestaNotaDeVenta =  new DatosRespuestaNotaDeVenta(notaDeVenta.getId(),
                 notaDeVenta.getCliente(),datosRegistroNotaDeVenta.productos(),notaDeVenta.getTotal());
@@ -68,25 +58,29 @@ public class NotaDeVentaController {
         return ResponseEntity.created(url).body(datosRespuestaNotaDeVenta);
     }
 
+
     @GetMapping
-    public ResponseEntity<Page<DatosListadoNotaDeVenta>> listadoProductos(@PageableDefault(size=2) Pageable paginacion){
-        ResponseEntity<Page<DatosListadoNotaDeVenta>> respuesta=ResponseEntity.ok(notaDeVentaRepository.findAll(paginacion).map(DatosListadoNotaDeVenta::new));
-        return respuesta;
+    public ResponseEntity<Page<DatosListadoNotaDeVenta>> listadoNotasDeVenta(@PageableDefault(size = 5) Pageable paginacion){
+        return ResponseEntity.ok(notaDeVentaService.listarNotasDeVenta(paginacion));
     }
+
+
 
     @DeleteMapping
     @Transactional
-    public void eliminarNotaDeVenta(@RequestBody @Valid DatosEliminarNotaDeVenta datos){
+    public ResponseEntity<String> eliminarNotaDeVenta(@RequestBody @Valid DatosEliminarNotaDeVenta datos){
 
-        if (!notaDeVentaRepository.existsById(datos.id())) {
-            throw new ValidacionException("Nota de venta no encontrada: " + datos.id());
-        }
+        notaDeVentaService.eliminarNotaDeVenta(datos.id());
 
-        notaDeVentaRepository.deleteById(datos.id());
-
-
+        return ResponseEntity.ok("Eliminado correctamente Nota de venta id: "+ datos.id());
     }
 
+    @PutMapping
+    @Transactional
+    public ResponseEntity<DatosRespuestaNotaDeVenta> modificarNotaDeVenta
+            (DatosModificarNotaDeVenta datosModificarNotasDeVenta){
+
+    }
 
 
 

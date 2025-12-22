@@ -1,6 +1,5 @@
 package com.bloodlive.project.system.domain.notadeventa;
 
-import com.bloodlive.project.system.domain.detallesnotadeventa.DatosDetalleVenta;
 import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVenta;
 import jakarta.persistence.*;
 

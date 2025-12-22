@@ -43,7 +43,6 @@ public class ProductoController {
     @DeleteMapping
     public ResponseEntity<String>  eliminarProducto(@RequestBody @Valid DatosEliminarProducto datosEliminarProducto){
 
-
         Producto producto = productoRepository.findByNombre(datosEliminarProducto.nombre())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
@@ -86,7 +85,7 @@ public class ProductoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<DatosListadoProductos>> listadoProductos(@PageableDefault(size=2) Pageable paginacion){
+    public ResponseEntity<Page<DatosListadoProductos>> listadoProductos(@PageableDefault(size=5) Pageable paginacion){
         return ResponseEntity.ok(productoRepository.findAll(paginacion).map(DatosListadoProductos::new));
     }
     

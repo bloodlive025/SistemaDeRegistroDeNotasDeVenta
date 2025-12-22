@@ -2,7 +2,6 @@ package com.bloodlive.project.system.domain.detallesnotadeventa;
 
 import com.bloodlive.project.system.domain.notadeventa.NotaDeVenta;
 import com.bloodlive.project.system.domain.producto.Producto;
-import com.bloodlive.project.system.domain.producto.ProductoRepository;
 import jakarta.persistence.*;
 
 @Entity(name="DetalleNotaDeVenta")
@@ -33,7 +32,7 @@ public class DetalleNotaDeVenta {
         this.subtotal=calcularSubtotal();
     }
 
-    public DetalleNotaDeVenta(DatosDetalleVenta datosDetalleVenta){
+    public DetalleNotaDeVenta(DatosDetalleNotaDeVenta datosDetalleVenta){
         this.cantidad=datosDetalleVenta.cantidad();
         this.subtotal=getSubtotal();
     }
