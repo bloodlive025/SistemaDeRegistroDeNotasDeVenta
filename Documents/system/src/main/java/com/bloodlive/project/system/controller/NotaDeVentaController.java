@@ -1,11 +1,8 @@
 package com.bloodlive.project.system.controller;
 
 import com.bloodlive.project.system.ValidacionException;
-import com.bloodlive.project.system.domain.detallesnotadeventa.DatosModificarNotaDeVenta;
-import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVenta;
-import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVentaRepository;
+import com.bloodlive.project.system.domain.notadeventa.DatosModificarNotaDeVenta;
 import com.bloodlive.project.system.domain.notadeventa.*;
-import com.bloodlive.project.system.domain.producto.DatosListadoProductos;
 import com.bloodlive.project.system.domain.producto.Producto;
 import com.bloodlive.project.system.domain.producto.ProductoRepository;
 import com.bloodlive.project.system.service.NotaDeVentaService;
@@ -21,10 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 
 @RestController
@@ -51,8 +44,7 @@ public class NotaDeVentaController {
         NotaDeVenta notaDeVenta;
         notaDeVenta = notaDeVentaService.registrarNotaDeVenta(datosRegistroNotaDeVenta);
 
-        DatosRespuestaNotaDeVenta datosRespuestaNotaDeVenta =  new DatosRespuestaNotaDeVenta(notaDeVenta.getId(),
-                notaDeVenta.getCliente(),datosRegistroNotaDeVenta.productos(),notaDeVenta.getTotal());
+        DatosRespuestaNotaDeVenta datosRespuestaNotaDeVenta =  new DatosRespuestaNotaDeVenta(notaDeVenta);
 
         URI url = uriComponentsBuilder.path("notadeventa/{id}").buildAndExpand(notaDeVenta.getId()).toUri();
         return ResponseEntity.created(url).body(datosRespuestaNotaDeVenta);
@@ -62,6 +54,11 @@ public class NotaDeVentaController {
     @GetMapping
     public ResponseEntity<Page<DatosListadoNotaDeVenta>> listadoNotasDeVenta(@PageableDefault(size = 5) Pageable paginacion){
         return ResponseEntity.ok(notaDeVentaService.listarNotasDeVenta(paginacion));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosRespuestaNotaDeVenta> obtenerNotaDeVenta(@PathVariable Long id) {
+        return ResponseEntity.ok(notaDeVentaService.obtenerPorId(id));
     }
 
 
@@ -78,8 +75,18 @@ public class NotaDeVentaController {
     @PutMapping
     @Transactional
     public ResponseEntity<DatosRespuestaNotaDeVenta> modificarNotaDeVenta
-            (DatosModificarNotaDeVenta datosModificarNotasDeVenta){
+            (@RequestBody @Valid DatosModificarNotaDeVenta datosModificarNotasDeVenta,
+             UriComponentsBuilder uriComponentsBuilder){
 
+        NotaDeVenta notaDeVenta = notaDeVentaRepository.findById(datosModificarNotasDeVenta.id())
+                .orElseThrow(() -> new ValidacionException("Nota de Venta no Encontrada"));
+        notaDeVentaService.modificarNotaDeVenta(datosModificarNotasDeVenta,notaDeVenta);
+
+        DatosRespuestaNotaDeVenta datosRespuestaNotaDeVenta = new DatosRespuestaNotaDeVenta(notaDeVenta);
+
+        URI url = uriComponentsBuilder.path("notadeventa/{id}").buildAndExpand(notaDeVenta.getId()).toUri();
+
+        return ResponseEntity.created(url).body(datosRespuestaNotaDeVenta);
     }
 
 

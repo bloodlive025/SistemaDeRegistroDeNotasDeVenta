@@ -45,10 +45,17 @@ public class NotaDeVenta {
     }
 
     public void setProductos(List<DetalleNotaDeVenta> productos) {
+        productos.forEach(p -> p.setNotaDeVenta(this));
         this.productos = productos;
     }
 
-    public void setTotal(Double total) {
-        this.total = total;
+    public void addProductos(List<DetalleNotaDeVenta> productos){
+        productos.forEach(p -> p.setNotaDeVenta(this));
+        this.productos.addAll(productos);
+
+    }
+
+    public void setTotal() {
+        this.total = productos.stream().mapToDouble(DetalleNotaDeVenta::getSubtotal).sum();
     }
 }
