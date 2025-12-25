@@ -21,7 +21,6 @@ public class TokenService {
 
 
     public String generarToken(Usuario usuario){
-
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.create()

@@ -1,6 +1,7 @@
 package com.bloodlive.project.system.controller;
 
 import com.bloodlive.project.system.ValidacionException;
+import com.bloodlive.project.system.domain.notadeventa.DatosRespuestaNotaDeVenta;
 import com.bloodlive.project.system.domain.producto.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,6 +25,7 @@ public class ProductoController {
     private ProductoRepository productoRepository;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public ResponseEntity<DatosRespuestaProducto> registrarProducto(@RequestBody @Valid DatosRegistroProducto datosRegistroProducto,
                                                                     UriComponentsBuilder uriComponentsBuilder){
 
@@ -41,6 +44,7 @@ public class ProductoController {
 
 
     @DeleteMapping
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public ResponseEntity<String>  eliminarProducto(@RequestBody @Valid DatosEliminarProducto datosEliminarProducto){
 
         Producto producto = productoRepository.findByNombre(datosEliminarProducto.nombre())
@@ -53,6 +57,7 @@ public class ProductoController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     @Transactional
     public ResponseEntity<DatosRespuestaProducto> modificarProducto(@RequestBody @Valid DatosModificarProducto datosModificarProducto,
                                                                     UriComponentsBuilder uriComponentsBuilder){
@@ -87,6 +92,13 @@ public class ProductoController {
     @GetMapping
     public ResponseEntity<Page<DatosListadoProductos>> listadoProductos(@PageableDefault(size=5) Pageable paginacion){
         return ResponseEntity.ok(productoRepository.findAll(paginacion).map(DatosListadoProductos::new));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosListadoProductos> obtenerProducto(@PathVariable Long id) {
+        Producto producto = productoRepository.findById(id).orElseThrow(()->new ValidacionException("Producto no encontrado"));
+        DatosListadoProductos datosListadoProducto = new DatosListadoProductos(producto);
+        return ResponseEntity.ok(datosListadoProducto);
     }
     
 }
