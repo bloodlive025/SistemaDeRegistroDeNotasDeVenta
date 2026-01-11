@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
-public class UsuarioService implements UserDetailsService {
+public class UsuarioService{
 
     UsuarioRepository usuarioRepository;
     @Autowired
@@ -21,10 +21,8 @@ public class UsuarioService implements UserDetailsService {
         this.usuarioRepository=usuarioRepository;
     }
 
-    public Usuario agregarUsuario(@RequestBody DatosRegistroUsuario datosRegistroUsuario
+    public Usuario agregarUsuario(DatosRegistroUsuario datosRegistroUsuario
                                     ){
-
-
 
 
         Usuario usuario = new Usuario(datosRegistroUsuario);
@@ -42,12 +40,8 @@ public class UsuarioService implements UserDetailsService {
         String clave = passwordEncoder.encode(datosRegistroUsuario.clave());
         manager.setClave(clave);
         usuarioRepository.save(manager);
-
         return manager;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        return usuarioRepository.findByLogin(username);
-    }
+
 }

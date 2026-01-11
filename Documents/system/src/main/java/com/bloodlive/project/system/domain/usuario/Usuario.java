@@ -50,14 +50,14 @@ public class Usuario implements UserDetails {
     }
 
     public Usuario(DatosRegistroUsuario datosRegistroUsuario){
-        this.login= datosRegistroUsuario.correo();
+        this.login= datosRegistroUsuario.login();
         this.nombre= datosRegistroUsuario.nombre();
         this.clave= datosRegistroUsuario.clave();
         this.rol = ROLE_CLIENTE;
     }
 
     public Usuario(DatosRegistroUsuario datosRegistroUsuario,Rol rol){
-        this.login= datosRegistroUsuario.correo();
+        this.login= datosRegistroUsuario.login();
         this.nombre= datosRegistroUsuario.nombre();
         this.clave= datosRegistroUsuario.clave();
         this.rol = ROLE_MANAGER;
