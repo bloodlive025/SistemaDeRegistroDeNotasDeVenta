@@ -1,9 +1,8 @@
 package com.bloodlive.project.system.controller;
 
-import com.bloodlive.project.system.ValidacionException;
+import com.bloodlive.project.system.Exceptions.ValidacionException;
 import com.bloodlive.project.system.domain.notadeventa.DatosModificarNotaDeVenta;
 import com.bloodlive.project.system.domain.notadeventa.*;
-import com.bloodlive.project.system.domain.producto.Producto;
 import com.bloodlive.project.system.domain.producto.ProductoRepository;
 import com.bloodlive.project.system.service.NotaDeVentaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

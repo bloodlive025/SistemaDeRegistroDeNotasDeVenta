@@ -1,6 +1,6 @@
 package com.bloodlive.project.system.service;
 
-import com.bloodlive.project.system.ValidacionException;
+import com.bloodlive.project.system.Exceptions.ValidacionException;
 import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVenta;
 import com.bloodlive.project.system.domain.detallesnotadeventa.DetalleNotaDeVentaRepository;
 import com.bloodlive.project.system.domain.notadeventa.*;
@@ -9,12 +9,10 @@ import com.bloodlive.project.system.domain.producto.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service

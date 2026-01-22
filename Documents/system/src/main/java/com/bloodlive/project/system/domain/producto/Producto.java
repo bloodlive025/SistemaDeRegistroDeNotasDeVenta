@@ -12,13 +12,15 @@ public class Producto {
     private String nombre;
     private Double precio;
     private Integer cantidad;
+    private String url;
 
 
-    public Producto(Long id, String nombre, Double precio, Integer cantidad){
+    public Producto(Long id, String nombre, Double precio, Integer cantidad,String url){
         this.id=id;
         this.nombre=nombre;
         this.precio=precio;
         this.cantidad=cantidad;
+        this.url = url;
     }
 
     public Producto(){
@@ -29,6 +31,7 @@ public class Producto {
         this.nombre=datosRegistroProducto.nombre();
         this.precio=datosRegistroProducto.precio();
         this.cantidad=datosRegistroProducto.cantidad();
+        this.url=datosRegistroProducto.url();
     }
 
 
@@ -58,5 +61,13 @@ public class Producto {
 
     public Integer getCantidad() {
         return cantidad;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

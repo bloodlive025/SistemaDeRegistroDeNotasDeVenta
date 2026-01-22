@@ -4,6 +4,6 @@ public record DatosRespuestaProducto(Long id,
                                      String nombre,
                                      Double precio,
                                      Integer cantidad,
-                                     String verf
+                                     String url
 ) {
 }

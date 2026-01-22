@@ -1,6 +1,6 @@
 package com.bloodlive.project.system.domain.producto;
 
-public record DatosEliminarProducto(String nombre,
+public record DatosEliminarProducto(Long id,
                                     String verf) {
 
 }

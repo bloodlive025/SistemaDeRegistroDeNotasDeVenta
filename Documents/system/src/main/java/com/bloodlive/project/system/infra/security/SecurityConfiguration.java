@@ -37,7 +37,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
-                    .requestMatchers("/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**").permitAll();
+                    .requestMatchers(HttpMethod.GET,"/productos").permitAll()
+                            .requestMatchers("/error").permitAll()
+                            .requestMatchers("/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -1,7 +1,6 @@
 package com.bloodlive.project.system.controller;
 
-import com.bloodlive.project.system.ValidacionException;
-import com.bloodlive.project.system.domain.notadeventa.DatosRespuestaNotaDeVenta;
+import com.bloodlive.project.system.Exceptions.ValidacionException;
 import com.bloodlive.project.system.domain.producto.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -35,7 +34,7 @@ public class ProductoController {
 
         Producto producto = productoRepository.save(new Producto(datosRegistroProducto));
         DatosRespuestaProducto datosRespuestaProducto =new DatosRespuestaProducto(producto.getId(),
-                producto.getNombre(),producto.getPrecio(),producto.getCantidad(),"NO ME ABANDONES");
+                producto.getNombre(),producto.getPrecio(),producto.getCantidad(), producto.getUrl());
 
         URI url = uriComponentsBuilder.path("productos/{id}").buildAndExpand(producto.getId()).toUri();
         return ResponseEntity.created(url).body(datosRespuestaProducto);
@@ -47,12 +46,12 @@ public class ProductoController {
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     public ResponseEntity<String>  eliminarProducto(@RequestBody @Valid DatosEliminarProducto datosEliminarProducto){
 
-        Producto producto = productoRepository.findByNombre(datosEliminarProducto.nombre())
+        Producto producto = productoRepository.findById(datosEliminarProducto.id())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
         productoRepository.delete(producto);
 
-        return ResponseEntity.ok("Producto '" + datosEliminarProducto.nombre() + "' eliminado");
+        return ResponseEntity.ok("Producto '" + datosEliminarProducto.id() + "' eliminado");
 
     }
 
@@ -76,10 +75,13 @@ public class ProductoController {
             producto.setPrecio(datosModificarProducto.precio());
         }
 
-
+        if(datosModificarProducto.url() != null){
+            producto.setUrl(datosModificarProducto.url());
+        }
 
         DatosRespuestaProducto datosRespuestaProducto =new DatosRespuestaProducto(producto.getId(),
-                producto.getNombre(),producto.getPrecio(),producto.getCantidad(),"NO ME ABANDONES");
+                producto.getNombre(),producto.getPrecio(),producto.getCantidad(),
+                producto.getUrl());
 
         URI url = uriComponentsBuilder.path("productos/{id}").buildAndExpand(producto.getId()).toUri();
         return ResponseEntity.created(url).body(datosRespuestaProducto);
@@ -90,7 +92,7 @@ public class ProductoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<DatosListadoProductos>> listadoProductos(@PageableDefault(size=5) Pageable paginacion){
+    public ResponseEntity<Page<DatosListadoProductos>> listadoProductos(@PageableDefault(size=20) Pageable paginacion){
         return ResponseEntity.ok(productoRepository.findAll(paginacion).map(DatosListadoProductos::new));
     }
 
