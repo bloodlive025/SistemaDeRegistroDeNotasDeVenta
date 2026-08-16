@@ -25,9 +25,10 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.create()
-                    .withIssuer("voll med")
+                    .withIssuer("ecommerce")
                     .withSubject(usuario.getLogin())
                     .withClaim("id",usuario.getId())
+                    .withClaim("role",usuario.getRole().toString())
                     .withExpiresAt(generarFechaExpiracion())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
@@ -48,7 +49,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             verifier = JWT.require(algorithm)
-                    .withIssuer("voll med")
+                    .withIssuer("ecommerce")
                     .build()
                     .verify(token);
             verifier.getSubject();

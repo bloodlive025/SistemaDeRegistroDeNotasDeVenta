@@ -35,9 +35,9 @@ public class SecurityConfiguration {
                 .cors(cors -> {})
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.POST, "/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/productos").permitAll()
+                    req.requestMatchers(HttpMethod.POST, "/login").permitAll()//Logear, en esta aplicacion se logea con post
+                    .requestMatchers(HttpMethod.POST, "/usuario").permitAll()//Usuario es igual a cliente en esta aplicacion, otro tipo de "usuarios" como manager admin no se crean mediante este endpoint
+                    .requestMatchers(HttpMethod.GET,"/productos/**").permitAll()
                             .requestMatchers("/error").permitAll()
                             .requestMatchers("/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**").permitAll();
                     req.anyRequest().authenticated();
@@ -51,7 +51,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder PaswordEncoder(){
+    public PasswordEncoder PasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
 

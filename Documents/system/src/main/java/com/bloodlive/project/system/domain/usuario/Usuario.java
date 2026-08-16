@@ -125,6 +125,8 @@ public class Usuario implements UserDetails {
         return clave;
     }
 
+    public Rol getRole() {return rol;}
+
     public String getNombre() {
         return nombre;
     }
